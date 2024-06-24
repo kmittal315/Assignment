@@ -83,6 +83,7 @@ const App = () => {
       }
       return row;
     });
+    setHistory([...history, { prevData: data, newData }]);
     setData(newData);
   };
 
