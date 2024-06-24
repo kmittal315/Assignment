@@ -132,7 +132,7 @@ const App = () => {
       <table className="min-w-full bg-white">
         <thead>
           <tr>
-            {Array.from({ length: 86 }).map((_, index) => (
+            {Array.from({ length: 66 }).map((_, index) => (
               <th key={index} className="py-2 px-4 bg-gray-200">Column {index + 1}</th>
             ))}
             <th className="py-2 px-4 bg-gray-200">Actions</th>
