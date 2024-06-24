@@ -31,24 +31,29 @@ const App = () => {
   };
 
   const handleAddRow = async () => {
-    const response = await axios.post('http://localhost:5000/data', newRow);
-    setData([...data, response.data]);
-    setNewRow({});
-  };
+  const response = await axios.post('http://localhost:3000/data', newRow);
+  setHistory([...history, { prevData: data, newData: [...data, response.data] }]);
+  setData([...data, response.data]);
+  setNewRow({});
+};
 
   const handleDeleteRow = async (id) => {
-    await axios.delete(`http://localhost:5000/data/${id}`);
-    setData(data.filter(row => row.id !== id));
-  };
+  const deletedRow = data.find(row => row.id === id);
+  await axios.delete(`http://localhost:3000/data/${id}`);
+  setHistory([...history, { prevData: data, newData: data.filter(row => row.id !== id) }]);
+  setData(data.filter(row => row.id !== id));
+};
 
   // eslint-disable-next-line no-unused-vars
   const handleDeleteColumn = (columnIndex) => {
-    const newData = data.map(row => {
-      delete row[`column${columnIndex + 1}`];
-      return row;
-    });
-    setData(newData);
-  };
+  const newData = data.map(row => {
+    delete row[`column${columnIndex + 1}`];
+    return row;
+  });
+  setHistory([...history, { prevData: data, newData }]);
+  setData(newData);
+};
+
 
   const handleUndo = () => {
     const lastAction = history.pop();
@@ -83,14 +88,16 @@ const App = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleDelete = (id, column) => {
-    const newData = data.map(row => {
-      if (row.id === id) {
-        return { ...row, [column]: '' };
-      }
-      return row;
-    });
-    setData(newData);
-  };
+  const newData = data.map(row => {
+    if (row.id === id) {
+      return { ...row, [column]: '' };
+    }
+    return row;
+  });
+  setHistory([...history, { prevData: data, newData }]);
+  setData(newData);
+};
+
 
   useEffect(() => {
     const handleKeyDown = (e) => {
